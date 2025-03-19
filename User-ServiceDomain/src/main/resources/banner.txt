@@ -1,0 +1,14 @@
+${AnsiColor.BRIGHT_RED} __        __     _                           _     
+${AnsiColor.BRIGHT_RED} \ \      / /__  | |     ___  _ __  ___  ___ | |__  
+${AnsiColor.BRIGHT_RED}  \ \ /\ / / _ \ | |    / _ \| '_ \/ __|/ _ \| '_ \ 
+${AnsiColor.BRIGHT_RED}   \ V  V /  __/ | |___| (_) | | | \__ \  __/| | | |
+${AnsiColor.BRIGHT_RED}    \_/\_/ \___| |______\___/|_| |_|___/\___||_| |_|
+
+${AnsiColor.BRIGHT_BLUE}  _    _     _       
+${AnsiColor.BRIGHT_BLUE} / \  | |   (_)  ___ 
+${AnsiColor.BRIGHT_BLUE}/ _ \ | |   | | / _ \
+${AnsiColor.BRIGHT_BLUE}/ ___ \| |___| ||  __/
+${AnsiColor.BRIGHT_BLUE}/_/   \_\_____|_| \___|
+
+${AnsiColor.BRIGHT_RED}Welcome to ADITYA'S Spring Boot App!${AnsiColor.RESET}
+
