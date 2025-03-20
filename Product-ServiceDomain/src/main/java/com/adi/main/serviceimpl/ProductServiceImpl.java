@@ -87,4 +87,15 @@ public class ProductServiceImpl implements ProductService {
 			throw new ProductNotSavedException("Unexpected error occurred: " + e.getMessage());
 		}
 	}
+
+	public Iterable<Product> getAll() {
+		// TODO Auto-generated method stub
+		return pr.findAll();
+	}
+
+	@Override
+	public Product getById(int productId) {
+		// TODO Auto-generated method stub
+		return pr.getById(productId);
+	}
 }
