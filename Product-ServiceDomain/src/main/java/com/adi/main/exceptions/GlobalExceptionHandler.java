@@ -20,24 +20,23 @@ public class GlobalExceptionHandler {
     
     private static final Logger LOG = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    @ExceptionHandler(ProductException .class)
+    @ExceptionHandler(ProductException.class)
     public ResponseEntity<ErrorDto> handleInvalidProductException(ProductException ex) {
-        LOG.error("Handling InvalidProductException: {}", ex.getMessage());
-        ErrorDto errorResponse = new ErrorDto(ex.getMessage(), LocalDateTime.now());
+    	ErrorDto errorResponse = new ErrorDto(ex.getMessage(), LocalDateTime.now());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ProductNotSavedException.class)
     public ResponseEntity<ErrorDto> handleProductNotSavedException(ProductNotSavedException ex) {
         LOG.error("Handling ProductNotSavedException: {}", ex.getMessage());
-        ErrorDto errorResponse = new ErrorDto("An unexpected error occurred", LocalDateTime.now());
+        ErrorDto errorResponse = new ErrorDto(ex.getMessage(), LocalDateTime.now());
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_ACCEPTABLE);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorDto> handleGenericException(Exception ex) {
-        LOG.error("Handling Generic Exception: {}", ex.getMessage(), ex);
-        ErrorDto errDto = new ErrorDto("An error occurred: " + ex.getMessage(), LocalDateTime.now());
+    	LOG.error("Handling Generic Exception", ex);
+        ErrorDto errDto = new ErrorDto("An unexpected error occurred. Please try again later.", LocalDateTime.now());
         return new ResponseEntity<>(errDto, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

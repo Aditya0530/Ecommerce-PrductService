@@ -39,52 +39,81 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public Product saveProduct(String productJson, MultipartFile file) {
-		LOG.info("Received request to save product: {}", productJson);
-		Product p;
+		 LOG.info("Received request to save product: {}", productJson);
+		 
+		 Product p;
+		
+		    //  Check for missing or empty product JSON before parsing
+		    if (productJson == null || productJson.trim().isEmpty()) {
+		        LOG.error("Invalid product data: Product JSON or product image cannot be null or empty");
+		        throw new ProductException("Product JSON and product image are required. Please provide valid data.");
+		    }
 
-		try {
+		     p = null; // Ensure initialization
 
-			if (productJson == null || productJson.trim().isEmpty()) {
-				LOG.error("Invalid product JSON: JSON is null or empty");
-				throw new ProductException("Product JSON cannot be null or empty");
-			}
+		    try {
+		        //  Try parsing JSON and handle malformed JSON
+		        p = obj.readValue(productJson, Product.class);
 
-			p = obj.readValue(productJson, Product.class);
+		        // Check if product JSON parsing resulted in a null object
+		        if (p == null) {
+		            LOG.error("Error: Parsed Product object is null.");
+		            throw new ProductException("Invalid product JSON format. Please provide valid data.");
+		        }
 
-			if (p.getProductId() == 0) {
-				LOG.error("Product ID is missing or invalid: {}", p.getProductId());
-				throw new ProductException("Product ID must be provided and valid.");
-			}
+		        //  Check if product name is missing or empty
+		        if (p.getProductName() == null || p.getProductName().trim().isEmpty()) {
+		            LOG.error("Invalid product data: Product name cannot be empty");
+		            throw new ProductException("Product name is required.");
+		        }
 
-			if (file != null && !file.isEmpty()) {
-				try {
-					p.setProductImage(file.getBytes());
-				} catch (IOException e) {
-					LOG.error("Error processing the file: {}", e.getMessage());
-					throw new ProductNotSavedException("Error processing file: " + e.getMessage());
-				}
-			}
+		        //  Check if image is missing
+		        if (file == null || file.isEmpty()) {
+		            throw new ProductNotSavedException("Uploaded file is empty. Please upload a valid image.");
+		        }
 
-			p = pr.save(p);
-			LOG.info("Product saved successfully: {}", p.getProductId());
+		        //  Check if file is an image
+		        String fileName = file.getOriginalFilename();
+		        if (fileName == null || !isImageFile(fileName)) {
+		            LOG.error("Invalid file type: {}", fileName);
+		            throw new ProductNotSavedException("Invalid file type. Please upload an image file (JPG, JPEG, PNG, GIF).");
+		        }
 
-			return p;
-		} catch (JsonProcessingException e) {
+		        // Process the image
+		        byte[] imageData = file.getBytes();
+		        if (imageData.length == 0) {
+		            LOG.error("Uploaded file is empty (0 bytes).");
+		            throw new ProductNotSavedException("Uploaded file is empty. Please upload a valid image.");
+		        }
+		        p.setProductImage(imageData);
 
-			LOG.error("Error parsing JSON: {}", e.getMessage(), e);
-			throw new ProductException("Invalid JSON format: " + e.getMessage());
-		} catch (ProductException ex) {
+		        //  Save the product
+		        p = pr.save(p);
+		        LOG.info("Product saved successfully: {}", p.getProductId());
 
-			LOG.error("Product exception occurred: {}", ex.getMessage());
-			throw ex;
-		} catch (ProductNotSavedException ex) {
+		        return p;
 
-			LOG.error("Product not saved: {}", ex.getMessage());
-			throw ex;
-		} catch (Exception e) {
-
-			LOG.error("Unexpected error occurred: {}", e.getMessage(), e);
-			throw new ProductNotSavedException("Unexpected error occurred: " + e.getMessage());
-		}
+		    }catch (JsonProcessingException e) {
+		        LOG.error("Invalid product JSON format: {}", e.getMessage());
+		        throw new ProductException("Invalid product JSON format. Please provide valid data.");
+		    } catch (IOException e) {
+		        LOG.error("File processing error: {}", e.getMessage());
+		        throw new ProductException("Failed to process product image.");
+		    } catch (Exception e) {
+		        LOG.error("Unexpected error occurred: {}", e.getMessage(), e);
+		        throw new ProductNotSavedException("Unexpected error occurred: " + e.getMessage());
+		    }
+	}
+	/**
+	 * Method to check if the uploaded file is an image.
+	 */
+	private boolean isImageFile(String fileName) {
+	    String lowerCaseFileName = fileName.toLowerCase();
+	    return lowerCaseFileName.endsWith(".jpg") || 
+	           lowerCaseFileName.endsWith(".jpeg") || 
+	           lowerCaseFileName.endsWith(".png") || 
+	           lowerCaseFileName.endsWith(".gif") || 
+	           lowerCaseFileName.endsWith(".bmp");
 	}
 }
+

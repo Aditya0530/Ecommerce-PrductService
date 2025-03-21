@@ -17,6 +17,10 @@ import com.adi.main.serviceimpl.ProductServiceImpl;
 
 import jakarta.validation.Valid;
 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @RestController
 @RequestMapping("/product")
 public class ProductController {
@@ -24,21 +28,30 @@ public class ProductController {
 	@Autowired
 	ProductServiceImpl pi;
 	
+	 private static final Logger LOG = LoggerFactory.getLogger(ProductController.class);
+	
 	@PostMapping("/testException")
 	public ResponseEntity<String> testExceptionHandling() {
 	    throw new ProductException("This is a test exception!");
 	}
 	@PostMapping("/postProduct")
-	public ResponseEntity<Product> saveProduct (@RequestPart("product")String p,
-			@RequestPart("productImage") MultipartFile file) {
-		try {
-	        Product pr = pi.saveProduct(p, file);
+	public ResponseEntity<Product> saveProduct (@RequestPart(value = "product", required = false) String productJson, // Now optional
+	        @RequestPart(value = "productImage", required = false) MultipartFile file) { // Now optional
+
+	    // Manually check for missing product JSON
+	    if (productJson == null || productJson.trim().isEmpty()) {
+	        LOG.error("Invalid request: Product JSON is missing or empty.");
+	        throw new ProductException("Product JSON and product image are required. Please provide valid data.");
+	    }
+
+	    try {
+	        Product pr = pi.saveProduct(productJson, file);
 	        return new ResponseEntity<>(pr, HttpStatus.CREATED);
 	    } catch (ProductException ex) {
-	        // Temporarily log the error
-	        //LOG.error("Exception caught: {}", ex.getMessage());
-	        throw ex; 
+	        LOG.error("Exception caught: {}", ex.getMessage());
+	        throw ex;
 	    }
+		
 	}
 	}
 
