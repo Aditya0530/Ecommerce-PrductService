@@ -115,5 +115,16 @@ public class ProductServiceImpl implements ProductService {
 	           lowerCaseFileName.endsWith(".gif") || 
 	           lowerCaseFileName.endsWith(".bmp");
 	}
+
+	public Iterable<Product> getAll() {
+		// TODO Auto-generated method stub
+		return pr.findAll();
+	}
+
+	@Override
+	public Product getById(int productId) {
+		// TODO Auto-generated method stub
+		return pr.getById(productId);
+	}
 }
 

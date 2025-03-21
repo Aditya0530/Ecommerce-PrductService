@@ -71,3 +71,5 @@ public class Product {
 	@PositiveOrZero(message = "Warranty period cannot be negative")
 	private int warrantyPeriod;
 }
+
+
