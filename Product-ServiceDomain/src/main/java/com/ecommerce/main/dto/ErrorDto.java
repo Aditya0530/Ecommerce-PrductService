@@ -1,5 +1,6 @@
-package com.adi.main.dto;
+package com.ecommerce.main.dto;
 
+import java.sql.Date;
 import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
@@ -11,5 +12,5 @@ import lombok.NoArgsConstructor;
 @Data
 public class ErrorDto {
 	private String message;
-	private LocalDateTime timeDate;
+	private Date timeDate;
 }

@@ -1,4 +1,4 @@
-package com.adi.main.exceptions;
+package com.ecommerce.main.exceptions;
 
 public class ProductNotSavedException extends RuntimeException{
 

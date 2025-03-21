@@ -8,7 +8,7 @@
 		<version>3.4.3</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.adi.main</groupId>
+	<groupId>com.ecommerce.main</groupId>
 	<artifactId>Product-ServiceDomain</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>

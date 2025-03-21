@@ -1,4 +1,4 @@
-package com.adi.main.model;
+package com.ecommerce.main.model;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

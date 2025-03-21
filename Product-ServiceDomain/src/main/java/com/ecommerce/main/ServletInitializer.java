@@ -1,4 +1,4 @@
-package com.adi.main;
+package com.ecommerce.main;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
