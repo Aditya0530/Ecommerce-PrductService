@@ -1,6 +1,7 @@
 package com.ecommerce.main.servicei;
 
 
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ecommerce.main.dto.ProductDto;
@@ -12,4 +13,8 @@ public ProductDto saveProduct(String productJson,MultipartFile file);
 public Iterable<Product> getAll();
 
 public Product getById(int productId);
+
+public ProductDto updateProducts(String p, MultipartFile file);
+
+public void patchUpdate(String brand,String productName,long price,int productId);
 }

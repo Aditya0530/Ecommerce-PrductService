@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -47,5 +49,20 @@ public class ProductController {
 	public ResponseEntity<Product> getById(@PathVariable("productId") int productId) {
 		Product p = pi.getById(productId);
 		return new ResponseEntity<>(p, HttpStatus.OK);
+	}
+
+	@PutMapping("/putProduct")
+	public ResponseEntity<ProductDto> updateProduct(@RequestPart("product") String p,
+			@RequestPart("productImage") MultipartFile file) {
+		ProductDto pr = pi.updateProducts(p, file);
+		return new ResponseEntity<>(pr, HttpStatus.OK);
+	}
+
+	@PatchMapping("/partialUpdate/{brand}/{productName}/{price}/{productId}")
+	public ResponseEntity<?> partialupdateProduct(@PathVariable("brand") String brand,
+			@PathVariable("productName") String productName, @PathVariable("price") long price,
+			@PathVariable("productId") int productId) {
+		pi.patchUpdate(brand, productName, price, productId);
+		return new ResponseEntity<>("Partially Updated", HttpStatus.OK);
 	}
 }
