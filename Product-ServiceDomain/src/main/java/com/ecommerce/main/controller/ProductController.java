@@ -51,18 +51,4 @@ public class ProductController {
 		return new ResponseEntity<>(p, HttpStatus.OK);
 	}
 
-	@PutMapping("/putProduct")
-	public ResponseEntity<ProductDto> updateProduct(@RequestPart("product") String p,
-			@RequestPart("productImage") MultipartFile file) {
-		ProductDto pr = pi.updateProducts(p, file);
-		return new ResponseEntity<>(pr, HttpStatus.OK);
-	}
-
-	@PatchMapping("/partialUpdate/{brand}/{productName}/{price}/{productId}")
-	public ResponseEntity<?> partialupdateProduct(@PathVariable("brand") String brand,
-			@PathVariable("productName") String productName, @PathVariable("price") long price,
-			@PathVariable("productId") int productId) {
-		pi.patchUpdate(brand, productName, price, productId);
-		return new ResponseEntity<>("Partially Updated", HttpStatus.OK);
-	}
 }

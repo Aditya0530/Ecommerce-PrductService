@@ -14,7 +14,4 @@ public Iterable<Product> getAll();
 
 public Product getById(int productId);
 
-public ProductDto updateProducts(String p, MultipartFile file);
-
-public void patchUpdate(String brand,String productName,long price,int productId);
 }
