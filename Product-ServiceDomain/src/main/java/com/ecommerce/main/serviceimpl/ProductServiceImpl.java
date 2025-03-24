@@ -12,20 +12,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ecommerce.main.dto.ProductDto;
+import com.ecommerce.main.enums.Features;
 import com.ecommerce.main.exceptions.ProductException;
 import com.ecommerce.main.exceptions.ProductNotSavedException;
 import com.ecommerce.main.model.Product;
+import com.ecommerce.main.model.ProductFeatures;
+import com.ecommerce.main.model.ProductImage;
 import com.ecommerce.main.repository.ProductRepository;
 import com.ecommerce.main.servicei.ProductService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -39,7 +44,7 @@ public class ProductServiceImpl implements ProductService {
 	private static final Logger LOG = LoggerFactory.getLogger(ProductServiceImpl.class);
 
 	@Override
-	public ProductDto saveProduct(String productJson, MultipartFile file) {
+	public List<ProductDto> saveProduct(String productJson, List<MultipartFile> files) {
 		LOG.info("Received request to save product: {}", productJson);
 
 		if (productJson == null || productJson.trim().isEmpty()) {
@@ -47,35 +52,56 @@ public class ProductServiceImpl implements ProductService {
 			throw new ProductException("Product JSON cannot be null or empty");
 		}
 
-		Product p;
+		List<Product> products;
 		try {
-			p = obj.readValue(productJson, Product.class);
+			products = obj.readValue(productJson, new TypeReference<List<Product>>() {
+			});
 		} catch (JsonProcessingException e) {
 			LOG.error("Error parsing JSON: {}", e.getMessage(), e);
 			throw new ProductException("Invalid JSON format: " + e.getMessage());
 		}
 
-		if (p.getProductId() == 0) {
-			LOG.error("Product ID is missing or invalid: {}", p.getProductId());
-			throw new ProductException("Product ID must be provided and valid.");
-		}
-		if (file == null || file.isEmpty()) {
-			LOG.error("Product image file is missing or empty.");
-			throw new ProductException("Product image file must be provided.");
+		if (products.isEmpty()) {
+			LOG.error("Product list is empty or invalid");
+			throw new ProductException("At least one product must be provided.");
 		}
 
-		if (file != null && !file.isEmpty()) {
-			try {
-				p.setProductImage(file.getBytes());
-			} catch (IOException e) {
-				LOG.error("Error processing the file: {}", e.getMessage());
-				throw new ProductException("Failed to process product image.");
+		if (files == null || files.isEmpty()) {
+			LOG.error("Product image files are missing or empty.");
+			throw new ProductException("At least one product image file must be provided.");
+		}
+
+		try {
+			for (Product product : products) {
+
+				List<ProductImage> productImages = new ArrayList<>();
+				for (MultipartFile file : files) {
+					if (!file.isEmpty()) {
+						ProductImage productImage = new ProductImage();
+						productImage.setImageData(file.getBytes());
+						productImages.add(productImage);
+					}
+				}
+				product.setProductImages(productImages);
+
+				if (product.getProductFeatures() != null && !product.getProductFeatures().isEmpty()) {
+					for (int i = 0; i < product.getProductFeatures().size(); i++) {
+						ProductFeatures feature = product.getProductFeatures().get(i);
+						if (feature.getFeature() == null) {
+							feature.setFeature(Features.RAM);
+						}
+					}
+				}
 			}
+		} catch (IOException e) {
+			LOG.error("Error processing the file: {}", e.getMessage(), e);
+			throw new ProductException("Failed to process product images.");
 		}
-		Product savedProduct = pr.save(p);
-		LOG.info("Product saved successfully to Database: {}", savedProduct.getProductId());
-		return new ProductDto(savedProduct);
 
+		List<Product> savedProducts = (List<Product>) pr.saveAll(products);
+		LOG.info("Products saved successfully to Database: {}", savedProducts.size());
+
+		return savedProducts.stream().map(ProductDto::new).toList();
 	}
 
 	public Iterable<Product> getAll() {
@@ -87,4 +113,19 @@ public class ProductServiceImpl implements ProductService {
 	public Product getById(int productId) {
 		return pr.getById(productId);
 	}
+
+	@Override
+	public void patchProduct(boolean isAvailable,int productId) {
+		Product p = pr.getById(productId);
+		if (p == null) {
+			throw new ProductNotSavedException("Id Not Found For Partial Update...!");
+		}
+		pr.patchUpdate(isAvailable,productId);
+		LOG.info("Partial Update Successfull To Database...{}");
+
+	}
+
 }
+
+
+

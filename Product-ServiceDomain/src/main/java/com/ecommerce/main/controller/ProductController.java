@@ -1,10 +1,12 @@
 package com.ecommerce.main.controller;
 
 import java.sql.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,10 +33,13 @@ public class ProductController {
 	@Autowired
 	ProductService pi;
 
+	//postAll
 	@PostMapping("/postProduct")
-	public ResponseEntity<ProductDto> saveProduct(@RequestPart("product") String p,
-			@RequestPart("productImage") MultipartFile file) {
-		ProductDto pr = pi.saveProduct(p, file);
+
+	public ResponseEntity<List<ProductDto>> saveProduct(@RequestPart("product") String p,
+
+			@RequestPart("productImage") List<MultipartFile> file) {
+		List<ProductDto> pr = pi.saveProduct(p, file);
 		return new ResponseEntity<>(pr, HttpStatus.CREATED);
 
 	}
@@ -50,5 +55,14 @@ public class ProductController {
 		Product p = pi.getById(productId);
 		return new ResponseEntity<>(p, HttpStatus.OK);
 	}
+
+	//patch 1 productid as reference 2 flagAvailable
+	@PatchMapping("/updateFlag/{available}/{productId}")
+	public ResponseEntity<?> partialUpdate(@PathVariable("available") boolean isAvailable,
+			@PathVariable("productId") int productId) {
+		pi.patchProduct(isAvailable,productId);
+		return new ResponseEntity<>("Partially Updated Data", HttpStatus.OK);
+	}
+
 
 }
