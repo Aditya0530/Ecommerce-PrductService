@@ -87,4 +87,9 @@ public class ProductServiceImpl implements ProductService {
 	public Product getById(int productId) {
 		return pr.getById(productId);
 	}
+
+	@Override
+	public void deleteById(int productId) {
+    pr.deleteById(productId);		
+	}
 }

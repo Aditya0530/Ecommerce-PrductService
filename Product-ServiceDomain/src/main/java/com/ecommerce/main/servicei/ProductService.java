@@ -14,4 +14,6 @@ public Iterable<Product> getAll();
 
 public Product getById(int productId);
 
+public void deleteById(int productId);
+
 }
