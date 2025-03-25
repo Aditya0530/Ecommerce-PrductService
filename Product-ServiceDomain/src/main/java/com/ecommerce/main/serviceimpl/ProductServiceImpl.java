@@ -15,6 +15,7 @@ import com.ecommerce.main.dto.ProductDto;
 import com.ecommerce.main.enums.Features;
 import com.ecommerce.main.exceptions.ProductException;
 import com.ecommerce.main.exceptions.ProductNotSavedException;
+import com.ecommerce.main.exceptions.ValidationException;
 import com.ecommerce.main.model.Product;
 import com.ecommerce.main.model.ProductFeatures;
 import com.ecommerce.main.model.ProductImage;
@@ -29,6 +30,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +39,8 @@ public class ProductServiceImpl implements ProductService {
 
 	@Autowired
 	private ProductRepository pr;
-
+	@Autowired
+	private Validator validator;
 	@Autowired
 	private ObjectMapper obj;
 
@@ -54,12 +57,7 @@ public class ProductServiceImpl implements ProductService {
 			LOG.error("Error parsing JSON: {}", e.getMessage(), e);
 			throw new ProductException("Invalid JSON format: " + e.getMessage());
 		}
-
-		if (product == null) {
-			LOG.error("Product is empty or invalid");
-			throw new ProductException("At least one product must be provided.");
-		}
-
+		validateProduct(product);
 		try {
 			List<ProductImage> productImages = new ArrayList<>();
 			for (MultipartFile file : files) {
@@ -94,6 +92,18 @@ public class ProductServiceImpl implements ProductService {
 		return new ProductDto(product);
 	}
 
+	private void validateProduct(Product product) {
+		Set<ConstraintViolation<Product>> violations = validator.validate(product);
+		if (!violations.isEmpty()) {
+			Map<String, String> errors = new HashMap<>();
+			for (ConstraintViolation<Product> violation : violations) {
+				errors.put(violation.getPropertyPath().toString(), violation.getMessage());
+			}
+			LOG.error("Product validation failed: {}", errors);
+			throw new ValidationException(errors);
+		}
+	}
+
 	public Iterable<Product> getAll() {
 
 		return pr.findAll();
@@ -105,7 +115,6 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-
 	public void patchProduct(boolean isAvailable, int productId) {
 		Product p = pr.getById(productId);
 		if (p == null) {
@@ -119,7 +128,7 @@ public class ProductServiceImpl implements ProductService {
 	public void deleteById(int productId) {
 		pr.deleteById(productId);
 	}
-	
+
 	@Override
 	public void quantityAvailable(int quantity, int productId) {
 		Product p = pr.getById(productId);

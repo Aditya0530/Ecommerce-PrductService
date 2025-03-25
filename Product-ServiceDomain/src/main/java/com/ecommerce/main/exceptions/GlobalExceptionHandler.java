@@ -29,6 +29,13 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
 	}
 
+	@ExceptionHandler(ValidationException.class)
+    public ResponseEntity<Map<String,String>> handleValidationException(ValidationException ex) {
+		Map<String,String> errorResponse=new HashMap<>(ex.getErrors());
+		return new ResponseEntity<>(errorResponse,HttpStatus.BAD_REQUEST);
+		
+	}
+
 	@ExceptionHandler(ProductNotSavedException.class)
 	public ResponseEntity<ErrorDto> handleProductNotSavedException(ProductNotSavedException ex) {
 		LOG.error("Handling ProductNotSavedException: {}", ex.getMessage());
