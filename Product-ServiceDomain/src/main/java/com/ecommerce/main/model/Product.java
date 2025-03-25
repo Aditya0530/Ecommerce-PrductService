@@ -1,77 +1,71 @@
 package com.ecommerce.main.model;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-
-import org.hibernate.annotations.UpdateTimestamp;
-
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
-import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import lombok.*;
 
 @Entity
+@Table(name = "products") 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Product {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int productId;
 
-	@Id
-	private int productId;
-	
-	@NotBlank(message = "Product name cannot be empty")
-	@Size(max = 15, message = "Product name must not exceed 15 characters")
-	private String productName;
+    @NotBlank(message = "Product name cannot be empty")
+    @Size(max = 100, message = "Product name must not exceed 100 characters")
+    private String productName;
 
 	@NotBlank(message = "Description cannot be empty")
 	@Size(max = 50, message = "Description must not exceed 50 characters")
 	private String description;
-
+  
 	@NotBlank(message = "Brand cannot be empty")
 	@Size(max = 15, message = "Brand name must not exceed 15 characters")
 	private String brand;
+    @NotBlank(message = "Category cannot be empty")
+    @Size(max = 50, message = "Category must not exceed 50 characters")
+    private String category;
 
-	@NotBlank(message = "Category cannot be empty")
-	@Size(max = 50, message = "Category must not exceed 50 characters")
-	private String category;
+    @Positive(message = "Price must be greater than zero")
+    private double price;
 
-	@Positive(message = "Price must be greater than zero")
-	private double price;
+    @PositiveOrZero(message = "Quantity available cannot be negative")
+    private int quantityAvailable;
 
-	@PositiveOrZero(message = "Quantity available cannot be negative")
-	private int quantityAvailable;
+    @NotBlank(message = "Supplier name cannot be empty")
+    @Size(max = 100, message = "Supplier name must not exceed 100 characters")
+    private String supplierName;
 
-	@NotBlank(message = "Supplier name cannot be empty")
-	@Size(max = 100, message = "Supplier name must not exceed 100 characters")
-	private String supplierName;
+    @NotBlank(message = "Supplier contact cannot be empty")
+    @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Invalid supplier contact number")
+    private String supplierContact;
 
-	@NotBlank(message = "Supplier contact cannot be empty")
-	@Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Invalid supplier contact number")
-	private String supplierContact;
+    @PositiveOrZero(message = "Warranty period cannot be negative")
+    private int warrantyPeriod;
 
-	@Lob
-	@Column(length = 999999999)
-	private byte[] productImage;
+    private boolean available;
 
-	@PositiveOrZero(message = "Warranty period cannot be negative")
-	private int warrantyPeriod;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "product_id") 
+    private List<ProductImage> productImages;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "product_id") 
+    private List<ProductFeatures> productFeatures;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "product_id") 
+    private List<ProductReview> productReviews;
+    
 }
+<<<<<<< HEAD
 
 
 
 
+=======
+>>>>>>> branch 'main' of https://github.com/Aditya0530/Ecommerce-Project.git

@@ -14,4 +14,8 @@ public interface ProductRepository extends CrudRepository<Product, Integer> {
 	@Query("SELECT p FROM Product p WHERE p.productId = :productId")
 	Product getById(@Param("productId") int productId);
 
+	@Modifying
+	@Transactional
+	@Query("update Product p set p.available= :available where p.productId= :productId")
+	void patchUpdate(@Param("available") boolean isAvailable,@Param("productId") int productId);
 }
