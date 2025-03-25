@@ -6,61 +6,59 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 @Entity
-@Table(name = "products") 
+@Table(name = "products")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Product {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int productId;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int productId;
+	@NotBlank(message = "Product name cannot be empty")
+	@Size(max = 100, message = "Product name must not exceed 100 characters")
+	private String productName;
 
-    @NotBlank(message = "Product name cannot be empty")
-    @Size(max = 100, message = "Product name must not exceed 100 characters")
-    private String productName;
+	@NotBlank(message = "Description cannot be empty")
+	@Size(max = 80, message = "Description must not exceed 50 characters")
+	private String description;
 
-    @NotBlank(message = "Description cannot be empty")
-    @Size(max = 500, message = "Description must not exceed 500 characters")
-    private String description;
+	@NotBlank(message = "Brand cannot be empty")
+	@Size(max = 15, message = "Brand name must not exceed 15 characters")
+	private String brand;
+	@NotBlank(message = "Category cannot be empty")
+	@Size(max = 50, message = "Category must not exceed 50 characters")
+	private String category;
 
-    @NotBlank(message = "Brand cannot be empty")
-    @Size(max = 50, message = "Brand name must not exceed 50 characters")
-    private String brand;
+	@Positive(message = "Price must be greater than zero")
+	private double price;
 
-    @NotBlank(message = "Category cannot be empty")
-    @Size(max = 50, message = "Category must not exceed 50 characters")
-    private String category;
+	@PositiveOrZero(message = "Quantity available cannot be negative")
+	private int quantityAvailable;
 
-    @Positive(message = "Price must be greater than zero")
-    private double price;
+	@NotBlank(message = "Supplier name cannot be empty")
+	@Size(max = 100, message = "Supplier name must not exceed 100 characters")
+	private String supplierName;
 
-    @PositiveOrZero(message = "Quantity available cannot be negative")
-    private int quantityAvailable;
+	@NotBlank(message = "Supplier contact cannot be empty")
+	@Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Invalid supplier contact number")
+	private String supplierContact;
 
-    @NotBlank(message = "Supplier name cannot be empty")
-    @Size(max = 100, message = "Supplier name must not exceed 100 characters")
-    private String supplierName;
+	@PositiveOrZero(message = "Warranty period cannot be negative")
+	private int warrantyPeriod;
 
-    @NotBlank(message = "Supplier contact cannot be empty")
-    @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Invalid supplier contact number")
-    private String supplierContact;
+	private boolean available;
 
-    @PositiveOrZero(message = "Warranty period cannot be negative")
-    private int warrantyPeriod;
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "product_id")
+	private List<ProductImage> productImages;
 
-    private boolean available;
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "product_id")
+	private List<ProductFeatures> productFeatures;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_id") 
-    private List<ProductImage> productImages;
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "product_id")
+	private List<ProductReview> productReviews;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_id") 
-    private List<ProductFeatures> productFeatures;
-
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_id") 
-    private List<ProductReview> productReviews;
-    
 }

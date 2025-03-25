@@ -1,13 +1,8 @@
 package com.ecommerce.main.serviceimpl;
 
 import java.io.IOException;
-import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,42 +16,37 @@ import com.ecommerce.main.model.ProductImage;
 import com.ecommerce.main.repository.ProductRepository;
 import com.ecommerce.main.servicei.ProductService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.core.type.TypeReference;
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validator;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Service
+@Slf4j
 public class ProductServiceImpl implements ProductService {
 
 	@Autowired
-	private ProductRepository pr;
+	private ProductRepository productRepository;
 
 	@Autowired
-	private ObjectMapper obj;
-
-	private static final Logger LOG = LoggerFactory.getLogger(ProductServiceImpl.class);
+	private ObjectMapper mapper;
 
 	@Override
 	public ProductDto saveProduct(String productJson, List<MultipartFile> files) {
-		LOG.info("Received request to save product: {}", productJson);
+		log.info("Received request to save product: {}", productJson);
 
 		Product product;
 		try {
-			product = obj.readValue(productJson, Product.class);
+			product = mapper.readValue(productJson, Product.class);
 		} catch (JsonProcessingException e) {
-			LOG.error("Error parsing JSON: {}", e.getMessage(), e);
+			log.error("Error parsing JSON: {}", e.getMessage(), e);
 			throw new ProductException("Invalid JSON format: " + e.getMessage());
 		}
 
 		if (product == null) {
-			LOG.error("Product is empty or invalid");
+			log.error("Product is empty or invalid");
 			throw new ProductException("At least one product must be provided.");
 		}
 
@@ -84,12 +74,12 @@ public class ProductServiceImpl implements ProductService {
 				}
 			}
 		} catch (IOException e) {
-			LOG.error("Error processing the file: {}", e.getMessage(), e);
+			log.error("Error processing the file: {}", e.getMessage(), e);
 			throw new ProductException("Failed to process product images.");
 		}
 
-		Product savedProducts = pr.save(product);
-		LOG.info("Products saved successfully to Database: {}", savedProducts);
+		Product savedProducts = productRepository.save(product);
+		log.info("Products saved successfully to Database: {}", savedProducts);
 
 		return new ProductDto(product);
 	}
@@ -97,41 +87,53 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public Iterable<Product> getAll() {
 
-		return pr.findAll();
+		return productRepository.findAll();
 	}
 
 	@Override
 	public Product getById(int productId) {
-		return pr.getById(productId);
+		return productRepository.getById(productId);
 	}
 
 	@Override
 	public void patchProduct(boolean isAvailable, int productId) {
-		Product p = pr.getById(productId);
+		Product p = productRepository.getById(productId);
 		if (p == null) {
 			throw new ProductNotSavedException("Id Not Found For Partial Update...!");
 		}
-		pr.patchUpdate(isAvailable, productId);
-		LOG.info("Partial Update Successfull To Database...{}");
+		productRepository.patchUpdate(isAvailable, productId);
+		log.info("Partial Update Successfull To Database...{}");
 
 	}
 
 	@Override
 	public void deleteById(int productId) {
-		pr.deleteById(productId);
+		productRepository.deleteById(productId);
+	}
+
+	@Override
+	public void quantityAvailable(int quantity, int productId) {
+		Product p = productRepository.getById(productId);
+		if (p == null) {
+			throw new ProductNotSavedException("Id Not Found For Partial Update...!");
+		}
+		productRepository.quantityUpdate(quantity, productId);
+		log.info("Partial Update Successfull To Database...{}");
+
 	}
 
 	@Override
 	public Product updateProduct(int productId, String productJson, List<MultipartFile> files) {
 		Product product;
 		try {
-			product = obj.readValue(productJson, Product.class);
+			product = mapper.readValue(productJson, Product.class);
 		} catch (JsonProcessingException e) {
-			LOG.error("Error parsing JSON: {}", e.getMessage(), e);
+			log.error("Error parsing JSON: {}", e.getMessage(), e);
 			throw new ProductException("Invalid JSON format: " + e.getMessage());
 		}
 
-		Product existingProduct = pr.findById(productId).orElseThrow(() -> new ProductException("Product not found"));
+		Product existingProduct = productRepository.findById(productId)
+				.orElseThrow(() -> new ProductException("Product not found"));
 
 		existingProduct.setProductName(product.getProductName());
 		existingProduct.setDescription(product.getDescription());
@@ -155,12 +157,12 @@ public class ProductServiceImpl implements ProductService {
 			}
 			existingProduct.setProductImages(productImages);
 		} catch (IOException e) {
-			LOG.error("Error processing the file: {}", e.getMessage(), e);
+			log.error("Error processing the file: {}", e.getMessage(), e);
 			throw new ProductException("Failed to process product images.");
 		}
 
-		Product updatedProduct = pr.save(existingProduct);
-		LOG.info("Product updated successfully: {}", updatedProduct);
+		Product updatedProduct = productRepository.save(existingProduct);
+		log.info("Product updated successfully: {}", updatedProduct);
 
 		return updatedProduct;
 	}

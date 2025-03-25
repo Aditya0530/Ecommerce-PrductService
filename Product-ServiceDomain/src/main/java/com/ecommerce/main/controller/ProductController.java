@@ -1,13 +1,10 @@
 package com.ecommerce.main.controller;
 
-import java.sql.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
-import org.springframework.validation.annotation.Validated;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 
@@ -21,45 +18,39 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.ecommerce.main.dto.ErrorDto;
 import com.ecommerce.main.dto.ProductDto;
-import com.ecommerce.main.exceptions.ProductException;
 import com.ecommerce.main.model.Product;
 import com.ecommerce.main.servicei.ProductService;
-import com.ecommerce.main.serviceimpl.ProductServiceImpl;
-
-import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/product")
 public class ProductController {
 
 	@Autowired
-	ProductService pi;
+	ProductService productService;
 
-	// postAll
 	@PostMapping("/postProduct")
 	public ResponseEntity<ProductDto> saveProduct(@RequestPart("product") String p,
 			@RequestPart("productImage") List<MultipartFile> file) {
-		ProductDto pr = pi.saveProduct(p, file);
+		ProductDto pr = productService.saveProduct(p, file);
 		return new ResponseEntity<>(pr, HttpStatus.CREATED);
 	}
 
 	@GetMapping("/getAll")
 	public ResponseEntity<Iterable<Product>> getData() {
-		Iterable<Product> p = pi.getAll();
+		Iterable<Product> p = productService.getAll();
 		return new ResponseEntity<>(p, HttpStatus.OK);
 	}
 
 	@GetMapping("/getById/{productId}")
 	public ResponseEntity<Product> getById(@PathVariable("productId") int productId) {
-		Product p = pi.getById(productId);
+		Product p = productService.getById(productId);
 		return new ResponseEntity<>(p, HttpStatus.OK);
 	}
 
 	@DeleteMapping("/deleteById/{productId}")
 	public ResponseEntity<String> deleteData(@PathVariable("productId") int productId) {
-		pi.deleteById(productId);
+		productService.deleteById(productId);
 		return new ResponseEntity<>("Data Deleted Successfully", HttpStatus.OK);
 	}
 
@@ -67,15 +58,23 @@ public class ProductController {
 	@PatchMapping("/updateFlag/{available}/{productId}")
 	public ResponseEntity<?> partialUpdate(@PathVariable("available") boolean isAvailable,
 			@PathVariable("productId") int productId) {
-		pi.patchProduct(isAvailable, productId);
+		productService.patchProduct(isAvailable, productId);
 		return new ResponseEntity<>("Partially Updated Data", HttpStatus.OK);
 	}
 
 	@PutMapping("/updateProduct/{productId}")
-	public ResponseEntity<Product> updateProduct(@PathVariable("productId") int productId, 
-	                                              @RequestPart("product") String productJson,
-	                                              @RequestPart("productImage") List<MultipartFile> files) {
-	    Product updatedProduct = pi.updateProduct(productId, productJson, files);
-	    return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
+	public ResponseEntity<Product> updateProduct(@PathVariable("productId") int productId,
+			@RequestPart("product") String productJson, @RequestPart("productImage") List<MultipartFile> files) {
+		Product updatedProduct = productService.updateProduct(productId, productJson, files);
+		return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
 	}
+
+	// updateQuantity by productId
+	@PatchMapping("/updateQuantity/{quantity}/{productId}")
+	public ResponseEntity<?> quantityUpdate(@PathVariable("quantity") int available,
+			@PathVariable("productId") int productId) {
+		productService.quantityAvailable(available, productId);
+		return new ResponseEntity<>("Partially Updated Data", HttpStatus.OK);
+	}
+
 }
