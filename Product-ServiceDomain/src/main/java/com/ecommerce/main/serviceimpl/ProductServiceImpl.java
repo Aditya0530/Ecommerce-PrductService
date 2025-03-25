@@ -119,7 +119,7 @@ public class ProductServiceImpl implements ProductService {
 	public void deleteById(int productId) {
 		pr.deleteById(productId);
 	}
-
+	
 	@Override
 	public void quantityAvailable(int quantity, int productId) {
 		Product p = pr.getById(productId);

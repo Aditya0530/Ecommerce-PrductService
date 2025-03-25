@@ -16,9 +16,10 @@ public Iterable<Product> getAll();
 
 public Product getById(int productId);
 
-
 public void patchProduct(boolean isAvailable,int productId);
+
 public void quantityAvailable(int quantity,int productId);
+
 public void deleteById(int productId);
 
 
