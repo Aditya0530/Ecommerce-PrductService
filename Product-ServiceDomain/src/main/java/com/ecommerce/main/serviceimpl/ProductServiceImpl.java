@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.ecommerce.main.dto.ProductDto;
 import com.ecommerce.main.enums.Features;
 import com.ecommerce.main.exceptions.ProductException;
@@ -26,9 +25,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ValidationException;
 import jakarta.validation.Validator;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -98,20 +99,20 @@ public class ProductServiceImpl implements ProductService {
 			LOG.error("Error processing the file: {}", e.getMessage(), e);
 			throw new ProductException("Failed to process product images.");
 		}
-//		Product savedProduct = pr.save(p);
-//		Set<ConstraintViolation<Product>> violations = validator.validate(p);
-//		if (!violations.isEmpty()) {
-//			try {
-//				pr.save(p);
-//			} catch (ProductException s) {
-//				System.out.println(s.getMessage());
-//			}
-//		}
-
 		List<Product> savedProducts = (List<Product>) pr.saveAll(products);
 		LOG.info("Products saved successfully to Database: {}", savedProducts.size());
-
 		return savedProducts.stream().map(ProductDto::new).toList();
+	}
+
+		private void validateUser(Product p) {
+		Set<ConstraintViolation<Product>> violations = validator.validate(p);
+		if(!violations.isEmpty()) {
+			Map<String,String> errors=new HashMap<>();
+			for(ConstraintViolation<Product> violation:violations) {
+				errors.put(violation.getPropertyPath().toString(), violation.getMessage());
+			}
+			throw new ValidationException();
+		}
 	}
 
 	public Iterable<Product> getAll() {
@@ -125,7 +126,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public void patchProduct(boolean isAvailable,int productId) {
+	public void patchProduct(boolean isAvailable, int productId) {
 		Product p = pr.getById(productId);
 		if (p == null) {
 			throw new ProductNotSavedException("Id Not Found For Partial Update...!");
@@ -135,8 +136,8 @@ public class ProductServiceImpl implements ProductService {
 
 	}
 
+	@Override
 	public void deleteById(int productId) {
-    pr.deleteById(productId);		
+		pr.deleteById(productId);
 	}
-
 }

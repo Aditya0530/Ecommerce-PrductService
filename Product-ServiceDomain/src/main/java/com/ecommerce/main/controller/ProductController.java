@@ -64,7 +64,7 @@ public class ProductController {
 	}	
 	@DeleteMapping("/deleteById/{productId}")
 	public ResponseEntity<String> deleteData(@PathVariable("productId")int productId){
-	   pi.deleteById(productId);	
+	   pi.deleteById(productId);
 	   return new ResponseEntity<>("Data Deleted Successfully",HttpStatus.OK);
 	}
 	//patch 1 productid as reference 2 flagAvailable

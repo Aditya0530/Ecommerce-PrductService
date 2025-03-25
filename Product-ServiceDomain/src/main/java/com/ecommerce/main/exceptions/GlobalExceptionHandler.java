@@ -8,9 +8,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
 import com.ecommerce.main.dto.ErrorDto;
-
 import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -25,14 +23,14 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(ProductException.class)
 	public ResponseEntity<ErrorDto> handleInvalidProductException(ProductException ex) {
 		LOG.error("Handling ProductException: {}", ex.getMessage());
-		ErrorDto err = new ErrorDto(ex.getMessage(), new Date(10));
+		ErrorDto err = new ErrorDto("Problem in Product");
 		return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(ProductNotSavedException.class)
 	public ResponseEntity<ErrorDto> handleProductNotSavedException(ProductNotSavedException ex) {
 		LOG.error("Handling ProductNotSavedException: {}", ex.getMessage());
-		ErrorDto err = new ErrorDto(ex.getMessage(), new Date(10));
+		ErrorDto err = new ErrorDto("Product Not Saved");
 		return new ResponseEntity<>(err, HttpStatus.NOT_FOUND); // Return 406
 	}
 	@ExceptionHandler(MethodArgumentNotValidException.class)
@@ -44,11 +42,20 @@ public class GlobalExceptionHandler {
 	}
 	return new  ResponseEntity<Map<String,String>>(invalidFeildDetails,HttpStatus.BAD_REQUEST);
 	}
+	
+	@ExceptionHandler(ValidationException.class)
+    public ResponseEntity<ErrorDto> handleValidationException(ValidationException n) {
+        Map<String, String> errors =n.getErrors();
+        ErrorDto errorResponse = new ErrorDto("Validation Failed");
+        errorResponse.setMessage(errors.toString()); // Convert map to string for display
 
-//	@ExceptionHandler(Exception.class)
-//	public ResponseEntity<ErrorDto> handleGenericException(Exception ex) {
-//		LOG.error("Handling Generic Exception: {}", ex.getMessage(), ex);
-//		ErrorDto err = new ErrorDto(ex.getMessage(), new Date(10));
-//		return new ResponseEntity<>(err, HttpStatus.INTERNAL_SERVER_ERROR); // Return 500
-//	}
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<ErrorDto> handleGenericException(Exception ex) {
+		LOG.error("Handling Generic Exception: {}", ex.getMessage(), ex);
+		ErrorDto err = new ErrorDto(ex.getMessage());
+		return new ResponseEntity<>(err, HttpStatus.INTERNAL_SERVER_ERROR); // Return 500
+	}
 }
+
