@@ -60,20 +60,19 @@ public class ProductServiceImpl implements ProductService {
 			throw new ProductException("At least one product must be provided.");
 		}
 
-		if (files == null || files.isEmpty()) {
-			LOG.error("Product image files are missing or empty.");
-			throw new ProductException("At least one product image file must be provided.");
-		}
-
 		try {
 			List<ProductImage> productImages = new ArrayList<>();
 			for (MultipartFile file : files) {
+				if(file==null || file.isEmpty()) {
+					 throw new ProductException("At least one product image file must be provided.");
+				}
 				if (!file.isEmpty()) {
 					ProductImage productImage = new ProductImage();
 					productImage.setImageData(file.getBytes());
 					productImages.add(productImage);
 				}
 			}
+			
 			product.setProductImages(productImages);
 
 			if (product.getProductFeatures() != null && !product.getProductFeatures().isEmpty()) {
