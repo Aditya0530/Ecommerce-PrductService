@@ -21,5 +21,7 @@ public void patchProduct(boolean isAvailable,int productId);
 
 public void deleteById(int productId);
 
+public Product updateProduct(int productId, String productJson, List<MultipartFile> files);
+
 
 }

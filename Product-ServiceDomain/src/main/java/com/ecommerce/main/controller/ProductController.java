@@ -37,38 +37,45 @@ public class ProductController {
 	@Autowired
 	ProductService pi;
 
-	//postAll
+	// postAll
 	@PostMapping("/postProduct")
-
 	public ResponseEntity<ProductDto> saveProduct(@RequestPart("product") String p,
-
 			@RequestPart("productImage") List<MultipartFile> file) {
 		ProductDto pr = pi.saveProduct(p, file);
 		return new ResponseEntity<>(pr, HttpStatus.CREATED);
 	}
+
 	@GetMapping("/getAll")
 	public ResponseEntity<Iterable<Product>> getData() {
 		Iterable<Product> p = pi.getAll();
 		return new ResponseEntity<>(p, HttpStatus.OK);
 	}
+
 	@GetMapping("/getById/{productId}")
 	public ResponseEntity<Product> getById(@PathVariable("productId") int productId) {
 		Product p = pi.getById(productId);
 		return new ResponseEntity<>(p, HttpStatus.OK);
-	}	
-	@DeleteMapping("/deleteById/{productId}")
-	public ResponseEntity<String> deleteData(@PathVariable("productId")int productId){
-	 pi.deleteById(productId);	
-	   return new ResponseEntity<>("Data Deleted Successfully",HttpStatus.OK);
 	}
 
-	//patch 1 productid as reference 2 flagAvailable
+	@DeleteMapping("/deleteById/{productId}")
+	public ResponseEntity<String> deleteData(@PathVariable("productId") int productId) {
+		pi.deleteById(productId);
+		return new ResponseEntity<>("Data Deleted Successfully", HttpStatus.OK);
+	}
+
+	// patch 1 productid as reference 2 flagAvailable
 	@PatchMapping("/updateFlag/{available}/{productId}")
 	public ResponseEntity<?> partialUpdate(@PathVariable("available") boolean isAvailable,
 			@PathVariable("productId") int productId) {
-		pi.patchProduct(isAvailable,productId);
+		pi.patchProduct(isAvailable, productId);
 		return new ResponseEntity<>("Partially Updated Data", HttpStatus.OK);
 	}
 
-
+	@PutMapping("/updateProduct/{productId}")
+	public ResponseEntity<Product> updateProduct(@PathVariable("productId") int productId, 
+	                                              @RequestPart("product") String productJson,
+	                                              @RequestPart("productImage") List<MultipartFile> files) {
+	    Product updatedProduct = pi.updateProduct(productId, productJson, files);
+	    return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
+	}
 }

@@ -63,8 +63,8 @@ public class ProductServiceImpl implements ProductService {
 		try {
 			List<ProductImage> productImages = new ArrayList<>();
 			for (MultipartFile file : files) {
-				if(file==null || file.isEmpty()) {
-					 throw new ProductException("At least one product image file must be provided.");
+				if (file == null || file.isEmpty()) {
+					throw new ProductException("At least one product image file must be provided.");
 				}
 				if (!file.isEmpty()) {
 					ProductImage productImage = new ProductImage();
@@ -72,7 +72,7 @@ public class ProductServiceImpl implements ProductService {
 					productImages.add(productImage);
 				}
 			}
-			
+
 			product.setProductImages(productImages);
 
 			if (product.getProductFeatures() != null && !product.getProductFeatures().isEmpty()) {
@@ -94,6 +94,7 @@ public class ProductServiceImpl implements ProductService {
 		return new ProductDto(product);
 	}
 
+	@Override
 	public Iterable<Product> getAll() {
 
 		return pr.findAll();
@@ -105,7 +106,6 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-
 	public void patchProduct(boolean isAvailable, int productId) {
 		Product p = pr.getById(productId);
 		if (p == null) {
@@ -116,8 +116,53 @@ public class ProductServiceImpl implements ProductService {
 
 	}
 
+	@Override
 	public void deleteById(int productId) {
 		pr.deleteById(productId);
+	}
+
+	@Override
+	public Product updateProduct(int productId, String productJson, List<MultipartFile> files) {
+		Product product;
+		try {
+			product = obj.readValue(productJson, Product.class);
+		} catch (JsonProcessingException e) {
+			LOG.error("Error parsing JSON: {}", e.getMessage(), e);
+			throw new ProductException("Invalid JSON format: " + e.getMessage());
+		}
+
+		Product existingProduct = pr.findById(productId).orElseThrow(() -> new ProductException("Product not found"));
+
+		existingProduct.setProductName(product.getProductName());
+		existingProduct.setDescription(product.getDescription());
+		existingProduct.setBrand(product.getBrand());
+		existingProduct.setCategory(product.getCategory());
+		existingProduct.setPrice(product.getPrice());
+		existingProduct.setQuantityAvailable(product.getQuantityAvailable());
+		existingProduct.setSupplierName(product.getSupplierName());
+		existingProduct.setSupplierContact(product.getSupplierContact());
+		existingProduct.setWarrantyPeriod(product.getWarrantyPeriod());
+		existingProduct.setAvailable(product.isAvailable());
+
+		try {
+			List<ProductImage> productImages = new ArrayList<>();
+			for (MultipartFile file : files) {
+				if (!file.isEmpty()) {
+					ProductImage productImage = new ProductImage();
+					productImage.setImageData(file.getBytes());
+					productImages.add(productImage);
+				}
+			}
+			existingProduct.setProductImages(productImages);
+		} catch (IOException e) {
+			LOG.error("Error processing the file: {}", e.getMessage(), e);
+			throw new ProductException("Failed to process product images.");
+		}
+
+		Product updatedProduct = pr.save(existingProduct);
+		LOG.info("Product updated successfully: {}", updatedProduct);
+
+		return updatedProduct;
 	}
 
 }
