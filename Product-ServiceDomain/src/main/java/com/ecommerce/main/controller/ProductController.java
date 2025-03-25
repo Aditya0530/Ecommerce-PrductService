@@ -40,16 +40,10 @@ public class ProductController {
 	@Autowired
 	ProductService pi;
 
-	//postAll
-//	@PostMapping("/postProduct")
-//	public ResponseEntity<ProductDto> saveProduct(@Valid @RequestPart("product") String p,
-//			@RequestPart("productImage") MultipartFile file) {
-//		ProductDto pr = pi.saveProduct(p, file);
-//	}
+
 	@PostMapping("/postProduct")
-	public ResponseEntity<List<ProductDto>> saveProduct(@RequestPart("product") String p,
-		@RequestPart("productImage") List<MultipartFile> file) {
-		List<ProductDto> pr = pi.saveProduct(p, file);
+	public ResponseEntity<ProductDto> saveProduct(@RequestPart("product") String p,@RequestPart("productImage") List<MultipartFile> file) {
+		ProductDto pr = pi.saveProduct(p, file);
 		return new ResponseEntity<>(pr, HttpStatus.CREATED);
 	}
 	@GetMapping("/getAll")

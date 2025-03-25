@@ -26,10 +26,9 @@ public class ProductDto {
     private int quantityAvailable;
     private String supplierName;
     private boolean available;  
-   
+    private List<ProductImage> productImages;
     private List<ProductFeatures> productFeatures;
     private List<ProductReview> productReviews;
-    private Features feature;  
 
     public ProductDto(Product product) {
         this.productId = product.getProductId();
@@ -41,6 +40,7 @@ public class ProductDto {
         this.quantityAvailable = product.getQuantityAvailable();
         this.supplierName = product.getSupplierName();
         this.available=product.isAvailable();
+        this.productImages=product.getProductImages();
         this.productFeatures = product.getProductFeatures();
         this.productReviews = product.getProductReviews();
         

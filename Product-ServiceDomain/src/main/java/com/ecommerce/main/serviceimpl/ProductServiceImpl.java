@@ -46,52 +46,42 @@ public class ProductServiceImpl implements ProductService {
 	private final Validator validator = null;
 
 	@Override
-	public List<ProductDto> saveProduct(String productJson, List<MultipartFile> files) {
+	public ProductDto saveProduct(String productJson, List<MultipartFile> files) {
 		LOG.info("Received request to save product: {}", productJson);
 
-		if (productJson == null || productJson.trim().isEmpty()) {
-			LOG.error("Invalid product JSON: JSON is null or empty");
-			throw new ProductException("Product JSON cannot be null or empty");
-		}
-
-		List<Product> products;
+		Product product;
 		try {
-			products = obj.readValue(productJson, new TypeReference<List<Product>>() {
-			});
+			product = obj.readValue(productJson, Product.class);
 		} catch (JsonProcessingException e) {
 			LOG.error("Error parsing JSON: {}", e.getMessage(), e);
 			throw new ProductException("Invalid JSON format: " + e.getMessage());
 		}
 
-		if (products.isEmpty()) {
-			LOG.error("Product list is empty or invalid");
+		if (product == null) {
+			LOG.error("Product is empty or invalid");
 			throw new ProductException("At least one product must be provided.");
 		}
 
-		if (files == null || files.isEmpty()) {
-			LOG.error("Product image files are missing or empty.");
-			throw new ProductException("At least one product image file must be provided.");
-		}
-
 		try {
-			for (Product product : products) {
-
-				List<ProductImage> productImages = new ArrayList<>();
-				for (MultipartFile file : files) {
-					if (!file.isEmpty()) {
-						ProductImage productImage = new ProductImage();
-						productImage.setImageData(file.getBytes());
-						productImages.add(productImage);
-					}
+			List<ProductImage> productImages = new ArrayList<>();
+			for (MultipartFile file : files) {
+				if(file==null || file.isEmpty()) {
+					 throw new ProductException("At least one product image file must be provided.");
 				}
-				product.setProductImages(productImages);
+				if (!file.isEmpty()) {
+					ProductImage productImage = new ProductImage();
+					productImage.setImageData(file.getBytes());
+					productImages.add(productImage);
+				}
+			}
+			
+			product.setProductImages(productImages);
 
-				if (product.getProductFeatures() != null && !product.getProductFeatures().isEmpty()) {
-					for (int i = 0; i < product.getProductFeatures().size(); i++) {
-						ProductFeatures feature = product.getProductFeatures().get(i);
-						if (feature.getFeature() == null) {
-							feature.setFeature(Features.RAM);
-						}
+			if (product.getProductFeatures() != null && !product.getProductFeatures().isEmpty()) {
+				for (int i = 0; i < product.getProductFeatures().size(); i++) {
+					ProductFeatures feature = product.getProductFeatures().get(i);
+					if (feature.getFeature() == null) {
+						feature.setFeature(Features.RAM);
 					}
 				}
 			}
@@ -99,9 +89,9 @@ public class ProductServiceImpl implements ProductService {
 			LOG.error("Error processing the file: {}", e.getMessage(), e);
 			throw new ProductException("Failed to process product images.");
 		}
-		List<Product> savedProducts = (List<Product>) pr.saveAll(products);
-		LOG.info("Products saved successfully to Database: {}", savedProducts.size());
-		return savedProducts.stream().map(ProductDto::new).toList();
+		Product savedProducts =  pr.save(product);
+		LOG.info("Products saved successfully to Database: {}", savedProducts);
+		return new ProductDto(product);
 	}
 
 		private void validateUser(Product p) {
