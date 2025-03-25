@@ -63,8 +63,8 @@ public class ProductServiceImpl implements ProductService {
 		try {
 			List<ProductImage> productImages = new ArrayList<>();
 			for (MultipartFile file : files) {
-				if(file==null || file.isEmpty()) {
-					 throw new ProductException("At least one product image file must be provided.");
+				if (file == null || file.isEmpty()) {
+					throw new ProductException("At least one product image file must be provided.");
 				}
 				if (!file.isEmpty()) {
 					ProductImage productImage = new ProductImage();
@@ -72,7 +72,7 @@ public class ProductServiceImpl implements ProductService {
 					productImages.add(productImage);
 				}
 			}
-			
+
 			product.setProductImages(productImages);
 
 			if (product.getProductFeatures() != null && !product.getProductFeatures().isEmpty()) {
@@ -118,6 +118,17 @@ public class ProductServiceImpl implements ProductService {
 
 	public void deleteById(int productId) {
 		pr.deleteById(productId);
+	}
+
+	@Override
+	public void quantityAvailable(int quantity, int productId) {
+		Product p = pr.getById(productId);
+		if (p == null) {
+			throw new ProductNotSavedException("Id Not Found For Partial Update...!");
+		}
+		pr.quantityUpdate(quantity, productId);
+		LOG.info("Partial Update Successfull To Database...{}");
+
 	}
 
 }

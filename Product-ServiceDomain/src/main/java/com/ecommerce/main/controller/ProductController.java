@@ -37,20 +37,21 @@ public class ProductController {
 	@Autowired
 	ProductService pi;
 
-	//postAll
+	 //postProduct with all related Entities
 	@PostMapping("/postProduct")
 
 	public ResponseEntity<ProductDto> saveProduct(@RequestPart("product") String p,
-
 			@RequestPart("productImage") List<MultipartFile> file) {
 		ProductDto pr = pi.saveProduct(p, file);
 		return new ResponseEntity<>(pr, HttpStatus.CREATED);
 	}
+	//getAll product related Data
 	@GetMapping("/getAll")
 	public ResponseEntity<Iterable<Product>> getData() {
 		Iterable<Product> p = pi.getAll();
 		return new ResponseEntity<>(p, HttpStatus.OK);
 	}
+	//getProduct Details By ProductId
 	@GetMapping("/getById/{productId}")
 	public ResponseEntity<Product> getById(@PathVariable("productId") int productId) {
 		Product p = pi.getById(productId);
@@ -62,11 +63,19 @@ public class ProductController {
 	   return new ResponseEntity<>("Data Deleted Successfully",HttpStatus.OK);
 	}
 
-	//patch 1 productid as reference 2 flagAvailable
+	//updateFlag by productId
 	@PatchMapping("/updateFlag/{available}/{productId}")
 	public ResponseEntity<?> partialUpdate(@PathVariable("available") boolean isAvailable,
 			@PathVariable("productId") int productId) {
 		pi.patchProduct(isAvailable,productId);
+		return new ResponseEntity<>("Partially Updated Data", HttpStatus.OK);
+	}
+	
+	//updateQuantity by productId
+	@PatchMapping("/updateQuantity/{quantity}/{productId}")
+	public ResponseEntity<?> quantityUpdate(@PathVariable("quantity") int available,
+			@PathVariable("productId") int productId) {
+		pi.quantityAvailable(available,productId);
 		return new ResponseEntity<>("Partially Updated Data", HttpStatus.OK);
 	}
 
