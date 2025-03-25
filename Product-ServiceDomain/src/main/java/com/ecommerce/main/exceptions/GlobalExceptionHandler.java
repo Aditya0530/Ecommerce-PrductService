@@ -35,11 +35,20 @@ public class GlobalExceptionHandler {
 		ErrorDto err = new ErrorDto(ex.getMessage(), new Date(10));
 		return new ResponseEntity<>(err, HttpStatus.NOT_FOUND); // Return 406
 	}
-
-	@ExceptionHandler(Exception.class)
-	public ResponseEntity<ErrorDto> handleGenericException(Exception ex) {
-		LOG.error("Handling Generic Exception: {}", ex.getMessage(), ex);
-		ErrorDto err = new ErrorDto(ex.getMessage(), new Date(10));
-		return new ResponseEntity<>(err, HttpStatus.INTERNAL_SERVER_ERROR); // Return 500
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<Map<String,String>> handleExceptionMethod(MethodArgumentNotValidException ex){
+	Map<String,String> invalidFeildDetails=new HashMap<>();
+	List<FieldError> fieldErrors=ex.getBindingResult().getFieldErrors();
+	for(FieldError fe:fieldErrors) {
+	invalidFeildDetails.put(fe.getField(), fe.getDefaultMessage());
 	}
+	return new  ResponseEntity<Map<String,String>>(invalidFeildDetails,HttpStatus.BAD_REQUEST);
+	}
+
+//	@ExceptionHandler(Exception.class)
+//	public ResponseEntity<ErrorDto> handleGenericException(Exception ex) {
+//		LOG.error("Handling Generic Exception: {}", ex.getMessage(), ex);
+//		ErrorDto err = new ErrorDto(ex.getMessage(), new Date(10));
+//		return new ResponseEntity<>(err, HttpStatus.INTERNAL_SERVER_ERROR); // Return 500
+//	}
 }

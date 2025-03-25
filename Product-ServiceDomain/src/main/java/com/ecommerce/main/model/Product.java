@@ -33,17 +33,17 @@ public class Product {
 
 	@Id
 	private int productId;
+	
 	@NotBlank(message = "Product name cannot be empty")
-
-	@Size(max = 100, message = "Product name must not exceed 100 characters")
+	@Size(max = 15, message = "Product name must not exceed 15 characters")
 	private String productName;
 
 	@NotBlank(message = "Description cannot be empty")
-	@Size(max = 500, message = "Description must not exceed 500 characters")
+	@Size(max = 50, message = "Description must not exceed 50 characters")
 	private String description;
 
 	@NotBlank(message = "Brand cannot be empty")
-	@Size(max = 50, message = "Brand name must not exceed 50 characters")
+	@Size(max = 15, message = "Brand name must not exceed 15 characters")
 	private String brand;
 
 	@NotBlank(message = "Category cannot be empty")
@@ -71,5 +71,7 @@ public class Product {
 	@PositiveOrZero(message = "Warranty period cannot be negative")
 	private int warrantyPeriod;
 }
+
+
 
 

@@ -1,11 +1,18 @@
 package com.ecommerce.main.controller;
 
 import java.sql.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,11 +40,12 @@ public class ProductController {
 	ProductService pi;
 
 	@PostMapping("/postProduct")
-	public ResponseEntity<ProductDto> saveProduct(@RequestPart("product") String p,
+	public ResponseEntity<ProductDto> saveProduct(@Valid @RequestPart("product") String p,
 			@RequestPart("productImage") MultipartFile file) {
 		ProductDto pr = pi.saveProduct(p, file);
 		return new ResponseEntity<>(pr, HttpStatus.CREATED);
 	}
+	
 	@GetMapping("/getAll")
 	public ResponseEntity<Iterable<Product>> getData() {
 		Iterable<Product> p = pi.getAll();
@@ -53,5 +61,7 @@ public class ProductController {
 	 pi.deleteById(productId);	
 	   return new ResponseEntity<>("Data Deleted Successfully",HttpStatus.OK);
 	}
+	
+	
 
 }

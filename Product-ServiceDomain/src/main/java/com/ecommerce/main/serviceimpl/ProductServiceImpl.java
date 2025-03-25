@@ -6,6 +6,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.bind.validation.ValidationErrors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -37,7 +38,8 @@ public class ProductServiceImpl implements ProductService {
 	private ObjectMapper obj;
 
 	private static final Logger LOG = LoggerFactory.getLogger(ProductServiceImpl.class);
-
+    private final Validator validator=null;
+    
 	@Override
 	public ProductDto saveProduct(String productJson, MultipartFile file) {
 		LOG.info("Received request to save product: {}", productJson);
@@ -73,6 +75,15 @@ public class ProductServiceImpl implements ProductService {
 			}
 		}
 		Product savedProduct = pr.save(p);
+		Set<ConstraintViolation<Product>> violations=validator.validate(p);
+		if(!violations.isEmpty()) {
+		try{
+		pr.save(p);
+		}
+		catch(ProductException s) {
+			System.out.println(s.getMessage());
+		}
+		}
 		LOG.info("Product saved successfully to Database: {}", savedProduct.getProductId());
 		return new ProductDto(savedProduct);
 
