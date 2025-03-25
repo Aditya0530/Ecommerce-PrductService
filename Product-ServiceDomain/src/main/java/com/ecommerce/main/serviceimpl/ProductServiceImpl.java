@@ -115,6 +115,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
+
 	public void patchProduct(boolean isAvailable,int productId) {
 		Product p = pr.getById(productId);
 		if (p == null) {
@@ -123,6 +124,10 @@ public class ProductServiceImpl implements ProductService {
 		pr.patchUpdate(isAvailable,productId);
 		LOG.info("Partial Update Successfull To Database...{}");
 
+	}
+
+	public void deleteById(int productId) {
+    pr.deleteById(productId);		
 	}
 
 }
