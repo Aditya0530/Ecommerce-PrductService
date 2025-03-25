@@ -10,7 +10,7 @@ import com.ecommerce.main.dto.ProductDto;
 import com.ecommerce.main.model.Product;
 
 public interface ProductService {
-public List<ProductDto> saveProduct(String productJson,List<MultipartFile> file);
+public ProductDto saveProduct(String productJson,List<MultipartFile> file);
 
 public Iterable<Product> getAll();
 

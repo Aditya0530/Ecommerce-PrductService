@@ -40,10 +40,10 @@ public class ProductController {
 	//postAll
 	@PostMapping("/postProduct")
 
-	public ResponseEntity<List<ProductDto>> saveProduct(@RequestPart("product") String p,
+	public ResponseEntity<ProductDto> saveProduct(@RequestPart("product") String p,
 
 			@RequestPart("productImage") List<MultipartFile> file) {
-		List<ProductDto> pr = pi.saveProduct(p, file);
+		ProductDto pr = pi.saveProduct(p, file);
 		return new ResponseEntity<>(pr, HttpStatus.CREATED);
 	}
 	@GetMapping("/getAll")
