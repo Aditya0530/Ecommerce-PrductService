@@ -25,21 +25,21 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(ProductException.class)
 	public ResponseEntity<ErrorDto> handleInvalidProductException(ProductException ex) {
 		LOG.error("Handling ProductException: {}", ex.getMessage());
-		ErrorDto err = new ErrorDto(ex.getMessage(), new Date(10));
+		ErrorDto err = new ErrorDto(ex.getMessage());
 		return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(ProductNotSavedException.class)
 	public ResponseEntity<ErrorDto> handleProductNotSavedException(ProductNotSavedException ex) {
 		LOG.error("Handling ProductNotSavedException: {}", ex.getMessage());
-		ErrorDto err = new ErrorDto(ex.getMessage(), new Date(10));
+		ErrorDto err = new ErrorDto(ex.getMessage());
 		return new ResponseEntity<>(err, HttpStatus.NOT_FOUND); // Return 406
 	}
 
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ErrorDto> handleGenericException(Exception ex) {
 		LOG.error("Handling Generic Exception: {}", ex.getMessage(), ex);
-		ErrorDto err = new ErrorDto(ex.getMessage(), new Date(10));
+		ErrorDto err = new ErrorDto(ex.getMessage());
 		return new ResponseEntity<>(err, HttpStatus.INTERNAL_SERVER_ERROR); // Return 500
 	}
 }
