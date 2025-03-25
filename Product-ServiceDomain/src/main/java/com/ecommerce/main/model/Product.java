@@ -11,7 +11,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Product {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int productId;
@@ -20,14 +19,13 @@ public class Product {
     @Size(max = 100, message = "Product name must not exceed 100 characters")
     private String productName;
 
-    @NotBlank(message = "Description cannot be empty")
-    @Size(max = 500, message = "Description must not exceed 500 characters")
-    private String description;
-
-    @NotBlank(message = "Brand cannot be empty")
-    @Size(max = 50, message = "Brand name must not exceed 50 characters")
-    private String brand;
-
+	@NotBlank(message = "Description cannot be empty")
+	@Size(max = 80, message = "Description must not exceed 50 characters")
+	private String description;
+  
+	@NotBlank(message = "Brand cannot be empty")
+	@Size(max = 15, message = "Brand name must not exceed 15 characters")
+	private String brand;
     @NotBlank(message = "Category cannot be empty")
     @Size(max = 50, message = "Category must not exceed 50 characters")
     private String category;
@@ -64,3 +62,4 @@ public class Product {
     private List<ProductReview> productReviews;
     
 }
+
