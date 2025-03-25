@@ -20,7 +20,7 @@ public class Product {
     private String productName;
 
 	@NotBlank(message = "Description cannot be empty")
-	@Size(max = 50, message = "Description must not exceed 50 characters")
+	@Size(max = 80, message = "Description must not exceed 50 characters")
 	private String description;
   
 	@NotBlank(message = "Brand cannot be empty")
@@ -62,10 +62,4 @@ public class Product {
     private List<ProductReview> productReviews;
     
 }
-<<<<<<< HEAD
 
-
-
-
-=======
->>>>>>> branch 'main' of https://github.com/Aditya0530/Ecommerce-Project.git

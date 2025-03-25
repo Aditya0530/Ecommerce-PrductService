@@ -14,6 +14,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,23 +51,22 @@ public class ProductController {
 		@RequestPart("productImage") List<MultipartFile> file) {
 		List<ProductDto> pr = pi.saveProduct(p, file);
 		return new ResponseEntity<>(pr, HttpStatus.CREATED);
-
 	}
-
 	@GetMapping("/getAll")
 	public ResponseEntity<Iterable<Product>> getData() {
 		Iterable<Product> p = pi.getAll();
 		return new ResponseEntity<>(p, HttpStatus.OK);
 	}
-
 	@GetMapping("/getById/{productId}")
 	public ResponseEntity<Product> getById(@PathVariable("productId") int productId) {
 		Product p = pi.getById(productId);
 		return new ResponseEntity<>(p, HttpStatus.OK);
+	}	
+	@DeleteMapping("/deleteById/{productId}")
+	public ResponseEntity<String> deleteData(@PathVariable("productId")int productId){
+	   pi.deleteById(productId);	
+	   return new ResponseEntity<>("Data Deleted Successfully",HttpStatus.OK);
 	}
-	
-	
-
 	//patch 1 productid as reference 2 flagAvailable
 	@PatchMapping("/updateFlag/{available}/{productId}")
 	public ResponseEntity<?> partialUpdate(@PathVariable("available") boolean isAvailable,

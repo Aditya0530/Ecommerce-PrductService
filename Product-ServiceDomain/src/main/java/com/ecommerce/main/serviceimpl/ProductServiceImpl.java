@@ -2,7 +2,6 @@ package com.ecommerce.main.serviceimpl;
 
 import java.io.IOException;
 import java.util.Set;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -126,7 +125,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public void patchProduct(boolean isAvailable, int productId) {
+	public void patchProduct(boolean isAvailable,int productId) {
 		Product p = pr.getById(productId);
 		if (p == null) {
 			throw new ProductNotSavedException("Id Not Found For Partial Update...!");
@@ -134,6 +133,10 @@ public class ProductServiceImpl implements ProductService {
 		pr.patchUpdate(isAvailable, productId);
 		LOG.info("Partial Update Successfull To Database...{}");
 
+	}
+
+	public void deleteById(int productId) {
+    pr.deleteById(productId);		
 	}
 
 }
