@@ -34,12 +34,10 @@ import java.util.Set;
 public class ProductServiceImpl implements ProductService {
 
 	@Autowired
+	private ProductRepository productRepository;
 
-	private ProductRepository pr;
 	@Autowired
 	private Validator validator;
-
-	private ProductRepository productRepository;
 
 	@Autowired
 	private ObjectMapper mapper;
@@ -61,7 +59,6 @@ public class ProductServiceImpl implements ProductService {
 			log.error("Product is empty or invalid");
 			throw new ProductException("At least one product must be provided.");
 		}
-
 
 		try {
 			List<ProductImage> productImages = new ArrayList<>();
@@ -97,7 +94,6 @@ public class ProductServiceImpl implements ProductService {
 		return new ProductDto(product);
 	}
 
-
 	private void validateProduct(Product product) {
 		Set<ConstraintViolation<Product>> violations = validator.validate(product);
 		if (!violations.isEmpty()) {
@@ -109,7 +105,6 @@ public class ProductServiceImpl implements ProductService {
 			throw new ValidationException(errors);
 		}
 	}
-
 
 	public Iterable<Product> getAll() {
 
