@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Entity
 @Table(name = "product_reviews")
 @Data
@@ -23,5 +22,5 @@ public class ProductReview {
 	private String reviewbyCustomername;
 	private int starRating;
 	private String reviewMessage;
-	
+
 }

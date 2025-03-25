@@ -14,14 +14,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProductFeatures {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int featuresId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int featuresId;
 
-    @Enumerated(EnumType.STRING)
-    private Features feature; // Example: RAM, STORAGE, etc.
+	@Enumerated(EnumType.STRING)
+	private Features feature; // Example: RAM, STORAGE, etc.
 
-    @NotBlank(message = "Feature description cannot be empty")
-    private String featureDescription;
+	@NotBlank(message = "Feature description cannot be empty")
+	private String featureDescription;
 
 }
