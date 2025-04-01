@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -62,13 +63,6 @@ public class ProductController {
 		return new ResponseEntity<>("Partially Updated Data", HttpStatus.OK);
 	}
 
-	@PutMapping("/updateProduct/{productId}")
-	public ResponseEntity<Product> updateProduct(@PathVariable("productId") int productId,
-			@RequestPart("product") String productJson, @RequestPart("productImage") List<MultipartFile> files) {
-		Product updatedProduct = productService.updateProduct(productId, productJson, files);
-		return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
-	}
-
 	// updateQuantity by productId
 	@PatchMapping("/updateQuantity/{quantity}/{productId}")
 	public ResponseEntity<?> quantityUpdate(@PathVariable("quantity") int available,
@@ -76,5 +70,11 @@ public class ProductController {
 		productService.quantityAvailable(available, productId);
 		return new ResponseEntity<>("Partially Updated Data", HttpStatus.OK);
 	}
-
+	
+	@GetMapping("/getByName/{productName}")
+	public ResponseEntity<Product> getproductByname(@PathVariable("productName") String productName) {
+		Product p = productService.getByName(productName);
+		return new ResponseEntity<>(p, HttpStatus.OK);
+	}
+	
 }

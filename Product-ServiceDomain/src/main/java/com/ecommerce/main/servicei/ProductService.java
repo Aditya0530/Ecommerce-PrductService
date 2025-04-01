@@ -19,7 +19,7 @@ public interface ProductService {
 	public void quantityAvailable(int quantity, int productId);
 
 	public void deleteById(int productId);
-
-	public Product updateProduct(int productId, String productJson, List<MultipartFile> files);
+	
+	public Product getByName(String productName);
 
 }

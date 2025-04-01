@@ -1,7 +1,10 @@
 package com.ecommerce.main.serviceimpl;
 
+import java.io.File;
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,6 +44,8 @@ public class ProductServiceImpl implements ProductService {
 
 	@Autowired
 	private ObjectMapper mapper;
+
+	private static final Logger log = LoggerFactory.getLogger(ProductServiceImpl.class);
 
 	@Override
 	public ProductDto saveProduct(String productJson, List<MultipartFile> files) {
@@ -144,48 +149,9 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public Product updateProduct(int productId, String productJson, List<MultipartFile> files) {
-		Product product;
-		try {
-			product = mapper.readValue(productJson, Product.class);
-		} catch (JsonProcessingException e) {
-			log.error("Error parsing JSON: {}", e.getMessage(), e);
-			throw new ProductException("Invalid JSON format: " + e.getMessage());
-		}
-
-		Product existingProduct = productRepository.findById(productId)
-				.orElseThrow(() -> new ProductException("Product not found"));
-
-		existingProduct.setProductName(product.getProductName());
-		existingProduct.setDescription(product.getDescription());
-		existingProduct.setBrand(product.getBrand());
-		existingProduct.setCategory(product.getCategory());
-		existingProduct.setPrice(product.getPrice());
-		existingProduct.setQuantityAvailable(product.getQuantityAvailable());
-		existingProduct.setSupplierName(product.getSupplierName());
-		existingProduct.setSupplierContact(product.getSupplierContact());
-		existingProduct.setWarrantyPeriod(product.getWarrantyPeriod());
-		existingProduct.setAvailable(product.isAvailable());
-
-		try {
-			List<ProductImage> productImages = new ArrayList<>();
-			for (MultipartFile file : files) {
-				if (!file.isEmpty()) {
-					ProductImage productImage = new ProductImage();
-					productImage.setImageData(file.getBytes());
-					productImages.add(productImage);
-				}
-			}
-			existingProduct.setProductImages(productImages);
-		} catch (IOException e) {
-			log.error("Error processing the file: {}", e.getMessage(), e);
-			throw new ProductException("Failed to process product images.");
-		}
-
-		Product updatedProduct = productRepository.save(existingProduct);
-		log.info("Product updated successfully: {}", updatedProduct);
-
-		return updatedProduct;
+	public Product getByName(String productName) {
+		
+		return productRepository.findAllByProductName(productName);
 	}
 
 }

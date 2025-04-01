@@ -25,4 +25,6 @@ public interface ProductRepository extends CrudRepository<Product, Integer> {
 	@Transactional
 	@Query("update Product p set p.quantityAvailable= :quantityAvailable where p.productId= :productId")
 	void quantityUpdate(@Param("quantityAvailable") int quantityAvailable, @Param("productId") int productId);
+	
+	Product findAllByProductName(String productName);
 }
