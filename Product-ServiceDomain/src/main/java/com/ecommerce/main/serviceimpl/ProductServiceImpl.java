@@ -149,9 +149,9 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public Product getByName(String productName) {
+	public List<Product> getByName(String productName) {
 		
-		return productRepository.findByProductName(productName);
+		return productRepository.findAllByProductName(productName);
 	}
 
 }
