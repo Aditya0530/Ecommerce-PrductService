@@ -1,7 +1,5 @@
 package com.ecommerce.main.repository;
 
-import java.util.List;
-
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -28,5 +26,5 @@ public interface ProductRepository extends CrudRepository<Product, Integer> {
 	@Query("update Product p set p.quantityAvailable= :quantityAvailable where p.productId= :productId")
 	void quantityUpdate(@Param("quantityAvailable") int quantityAvailable, @Param("productId") int productId);
 	
-	List<Product> findByProductName(String productName);
+	Iterable<Product> findByProductName(String productName);
 }
