@@ -149,7 +149,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public Product getByName(String productName) {
+	public Iterable<Product> getByName(String productName) {
 		
 		return productRepository.findByProductName(productName);
 	}

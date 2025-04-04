@@ -20,6 +20,6 @@ public interface ProductService {
 
 	public void deleteById(int productId);
 	
-	public Product getByName(String productName);
+	public Iterable<Product> getByName(String productName);
 
 }

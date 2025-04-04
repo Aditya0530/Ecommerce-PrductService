@@ -72,8 +72,8 @@ public class ProductController {
 	}
 	
 	@GetMapping("/getByName/{productName}")
-	public ResponseEntity<Product> getproductByname(@PathVariable("productName") String productName) {
-		Product p = productService.getByName(productName);
+	public ResponseEntity<Iterable<Product>> getproductByname(@PathVariable("productName") String productName) {
+		Iterable<Product> p = productService.getByName(productName);
 		return new ResponseEntity<>(p, HttpStatus.OK);
 	}
 	
