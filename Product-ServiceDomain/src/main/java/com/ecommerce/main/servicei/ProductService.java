@@ -21,5 +21,7 @@ public interface ProductService {
 	public void deleteById(int productId);
 	
 	public List<Product> getByName(String productName);
+	
+	public Product getOneProductByName(String productName);
 
 }

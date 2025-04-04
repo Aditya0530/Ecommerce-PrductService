@@ -77,4 +77,10 @@ public class ProductController {
 		return new ResponseEntity<>(p, HttpStatus.OK);
 	}
 	
+	//By Using Query For Single Product Get By Name 
+	@GetMapping("/getProductByName/{productName}")
+	public ResponseEntity<Product> getOneProductByname(@PathVariable("productName") String productName) {
+		Product p = productService.getOneProductByName(productName);
+		return new ResponseEntity<>(p, HttpStatus.OK);
+	}
 }
