@@ -27,4 +27,15 @@ public interface ProductRepository extends CrudRepository<Product, Integer> {
 	void quantityUpdate(@Param("quantityAvailable") int quantityAvailable, @Param("productId") int productId);
 	
 	Iterable<Product> findByProductName(String productName);
+	
+//	@Modifying
+//	@Transactional
+//	@Query("update ProductFeatures f set f.feature=: RAM ,f.featureDescription=: fecdes  Where f.featuresId =: fid")
+//	
+	
+	@Modifying
+	@Transactional
+	@Query("update ProductReview p set p.reviewbyCustomername= :reviewbyCustomername , p.starRating= :starRating,p.reviewMessage= :reviewMessage where p.reviewId= :reviewId")
+	void updatereview(@Param("reviewbyCustomername") String reviewbyCustomername,@Param("starRating")int starRating,@Param("reviewMessage") String reviewMessage,@Param("reviewId")int reviewId);
+	
 }

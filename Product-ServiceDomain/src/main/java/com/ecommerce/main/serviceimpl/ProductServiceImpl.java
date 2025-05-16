@@ -1,12 +1,17 @@
 package com.ecommerce.main.serviceimpl;
 
+
 import java.io.File;
 import java.io.IOException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ecommerce.main.dto.ProductDto;
@@ -17,6 +22,7 @@ import com.ecommerce.main.exceptions.ValidationException;
 import com.ecommerce.main.model.Product;
 import com.ecommerce.main.model.ProductFeatures;
 import com.ecommerce.main.model.ProductImage;
+import com.ecommerce.main.model.ProductReview;
 import com.ecommerce.main.repository.ProductRepository;
 import com.ecommerce.main.servicei.ProductService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -30,6 +36,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -153,4 +160,42 @@ public class ProductServiceImpl implements ProductService {
 		return productRepository.findByProductName(productName);
 	}
 
+	@Override
+	public void updateProduct(int productId, ProductDto productDto, List<MultipartFile> images) throws IOException {
+        Product product = productRepository.findById(productId).orElseThrow();
+        
+        // Update product reviews
+        product.getProductReviews().clear();
+        productDto.getProductReviews().forEach(reviewDto -> {
+            ProductReview review = new ProductReview();
+            review.setReviewbyCustomername(reviewDto.getReviewbyCustomername());
+            review.setReviewMessage(reviewDto.getReviewMessage());
+            review.setStarRating(reviewDto.getStarRating());
+            product.getProductReviews().add(review);
+        });
+        
+        // Update product features
+        product.getProductFeatures().clear();
+        productDto.getProductFeatures().forEach(featureDto -> {
+            ProductFeatures feature = new ProductFeatures();
+            feature.setFeature(featureDto.getFeature());
+            feature.setFeatureDescription(featureDto.getFeatureDescription());
+            product.getProductFeatures().add(feature);
+        });
+        
+        // Update product images
+        product.getProductImages().clear();
+        if (images != null) {
+            images.forEach(image -> {
+                try {
+                    ProductImage productImage = new ProductImage();
+                    productImage.setImageData(image.getBytes());
+                    product.getProductImages().add(productImage);
+                } catch (IOException e) {
+               
+                }
+            });
+        }
+        productRepository.save(product);
+    }
 }

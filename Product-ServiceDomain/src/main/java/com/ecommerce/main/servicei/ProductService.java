@@ -1,5 +1,6 @@
 package com.ecommerce.main.servicei;
 
+import java.io.IOException;
 import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 import com.ecommerce.main.dto.ProductDto;
@@ -19,5 +20,10 @@ public interface ProductService {
 	public void deleteById(int productId);
 	
 	public Iterable<Product> getByName(String productName);
+	
+	//public Product updateProduct(int productId,String productJson,List<MultipartFile> file);
+
+	void updateProduct(int productId, ProductDto productDto, List<MultipartFile> images) throws IOException;
+	
 
 }
