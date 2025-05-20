@@ -1,9 +1,7 @@
 package com.ecommerce.main.servicei;
 
 import java.util.List;
-
 import org.springframework.web.multipart.MultipartFile;
-
 import com.ecommerce.main.dto.ProductDto;
 import com.ecommerce.main.model.Product;
 
@@ -20,8 +18,9 @@ public interface ProductService {
 
 	public void deleteById(int productId);
 	
-	public List<Product> getByName(String productName);
-	
 	public Product getOneProductByName(String productName);
+
+	public Iterable<Product> getByName(String productName);
+
 
 }

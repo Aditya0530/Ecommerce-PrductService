@@ -33,7 +33,6 @@ import java.util.Map;
 import java.util.Set;
 
 @Service
-@Slf4j
 public class ProductServiceImpl implements ProductService {
 
 	@Autowired
@@ -149,15 +148,13 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List<Product> getByName(String productName) {
-		
-		return productRepository.findAllByProductName(productName);
-	}
-
-	@Override
 	public Product getOneProductByName(String productName) {
 	
 		return productRepository.getByName(productName);
+	}
+
+	public Iterable<Product> getByName(String productName) {		
+		return productRepository.findByProductName(productName);
 	}
 
 }

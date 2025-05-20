@@ -28,8 +28,12 @@ public interface ProductRepository extends CrudRepository<Product, Integer> {
 	@Query("update Product p set p.quantityAvailable= :quantityAvailable where p.productId= :productId")
 	void quantityUpdate(@Param("quantityAvailable") int quantityAvailable, @Param("productId") int productId);
 	
+
 	List<Product> findAllByProductName(String productName);
 	
 	@Query("Select p from Product p where p.productName = :productName")
 	Product getByName(@Param("productName") String productName);
+
+	Iterable<Product> findByProductName(String productName);
+
 }
