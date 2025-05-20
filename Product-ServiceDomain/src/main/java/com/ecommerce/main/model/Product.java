@@ -49,15 +49,15 @@ public class Product {
 
 	private boolean available;
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
 	@JoinColumn(name = "product_id")
 	private List<ProductImage> productImages;
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
 	@JoinColumn(name = "product_id")
 	private List<ProductFeatures> productFeatures;
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
 	@JoinColumn(name = "product_id")
 	private List<ProductReview> productReviews;
 

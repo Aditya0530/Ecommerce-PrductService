@@ -27,13 +27,22 @@ public interface ProductRepository extends CrudRepository<Product, Integer> {
 	@Transactional
 	@Query("update Product p set p.quantityAvailable= :quantityAvailable where p.productId= :productId")
 	void quantityUpdate(@Param("quantityAvailable") int quantityAvailable, @Param("productId") int productId);
-	
 
 	List<Product> findAllByProductName(String productName);
-	
+
 	@Query("Select p from Product p where p.productName = :productName")
 	Product getByName(@Param("productName") String productName);
 
 	Iterable<Product> findByProductName(String productName);
 
+//	@Modifying
+//	@Transactional
+//	@Query("update ProductFeatures f set f.feature=: RAM ,f.featureDescription=: fecdes  Where f.featuresId =: fid")
+//	
+
+	@Modifying
+	@Transactional
+	@Query("update ProductReview p set p.reviewbyCustomername= :reviewbyCustomername , p.starRating= :starRating,p.reviewMessage= :reviewMessage where p.reviewId= :reviewId")
+	void updatereview(@Param("reviewbyCustomername") String reviewbyCustomername, @Param("starRating") int starRating,
+			@Param("reviewMessage") String reviewMessage, @Param("reviewId") int reviewId);
 }
