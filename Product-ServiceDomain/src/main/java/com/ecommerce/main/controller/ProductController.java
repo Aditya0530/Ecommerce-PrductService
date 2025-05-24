@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -66,12 +64,11 @@ public class ProductController {
 		return new ResponseEntity<>("Partially Updated Data", HttpStatus.OK);
 	}
 
-	// updateQuantity by productId
-	@PatchMapping("/updateQuantity/{quantity}/{productId}")
+	@PutMapping("/updateQuantity/{quantity}/{productId}")
 	public ResponseEntity<?> quantityUpdate(@PathVariable("quantity") int available,
-			@PathVariable("productId") int productId) {
-		productService.quantityAvailable(available, productId);
-		return new ResponseEntity<>("Partially Updated Data", HttpStatus.OK);
+	        @PathVariable("productId") int productId) {
+	    productService.quantityAvailable(available, productId);
+	    return new ResponseEntity<>("Partially Updated Data", HttpStatus.OK);
 	}
 
 	@GetMapping("/getByName/{productName}")
