@@ -1,6 +1,5 @@
 package com.ecommerce.main.serviceimpl;
 
-
 import java.io.File;
 import java.io.IOException;
 
@@ -137,6 +136,7 @@ public class ProductServiceImpl implements ProductService {
 		log.info("Partial Update Successfull To Database...{}");
 
 	}
+
 	@Override
 	public void deleteById(int productId) {
 		productRepository.deleteById(productId);
@@ -148,58 +148,59 @@ public class ProductServiceImpl implements ProductService {
 		if (p == null) {
 			throw new ProductNotSavedException("Id Not Found For Partial Update...!");
 		}
+
 		p.setQuantityAvailable(quantity);
-	    productRepository.save(p);
+		productRepository.save(p);
 		log.info("Partial Update Successfull To Database...{}");
 
 	}
 
 	@Override
 	public Product getOneProductByName(String productName) {
-	
+
 		return productRepository.getByName(productName);
 	}
 
-	public Iterable<Product> getByName(String productName) {		
+	public Iterable<Product> getByName(String productName) {
 		return productRepository.findByProductName(productName);
 	}
 
 	@Override
 	public void updateProduct(int productId, ProductDto productDto, List<MultipartFile> images) throws IOException {
-        Product product = productRepository.findById(productId).orElseThrow();
-        
-        // Update product reviews
-        product.getProductReviews().clear();
-        productDto.getProductReviews().forEach(reviewDto -> {
-            ProductReview review = new ProductReview();
-            review.setReviewbyCustomername(reviewDto.getReviewbyCustomername());
-            review.setReviewMessage(reviewDto.getReviewMessage());
-            review.setStarRating(reviewDto.getStarRating());
-            product.getProductReviews().add(review);
-        });
-        
-        // Update product features
-        product.getProductFeatures().clear();
-        productDto.getProductFeatures().forEach(featureDto -> {
-            ProductFeatures feature = new ProductFeatures();
-            feature.setFeature(featureDto.getFeature());
-            feature.setFeatureDescription(featureDto.getFeatureDescription());
-            product.getProductFeatures().add(feature);
-        });
-        
-        // Update product images
-        product.getProductImages().clear();
-        if (images != null) {
-            images.forEach(image -> {
-                try {
-                    ProductImage productImage = new ProductImage();
-                    productImage.setImageData(image.getBytes());
-                    product.getProductImages().add(productImage);
-                } catch (IOException e) {
-               
-                }
-            });
-        }
-        productRepository.save(product);
-    }
+		Product product = productRepository.findById(productId).orElseThrow();
+
+		// Update product reviews
+		product.getProductReviews().clear();
+		productDto.getProductReviews().forEach(reviewDto -> {
+			ProductReview review = new ProductReview();
+			review.setReviewbyCustomername(reviewDto.getReviewbyCustomername());
+			review.setReviewMessage(reviewDto.getReviewMessage());
+			review.setStarRating(reviewDto.getStarRating());
+			product.getProductReviews().add(review);
+		});
+
+		// Update product features
+		product.getProductFeatures().clear();
+		productDto.getProductFeatures().forEach(featureDto -> {
+			ProductFeatures feature = new ProductFeatures();
+			feature.setFeature(featureDto.getFeature());
+			feature.setFeatureDescription(featureDto.getFeatureDescription());
+			product.getProductFeatures().add(feature);
+		});
+
+		// Update product images
+		product.getProductImages().clear();
+		if (images != null) {
+			images.forEach(image -> {
+				try {
+					ProductImage productImage = new ProductImage();
+					productImage.setImageData(image.getBytes());
+					product.getProductImages().add(productImage);
+				} catch (IOException e) {
+
+				}
+			});
+		}
+		productRepository.save(product);
+	}
 }
