@@ -47,13 +47,13 @@ public class ProductController {
 	}
 
 	@GetMapping("/getById/{productId}")
-	public ResponseEntity<Product> getById(@PathVariable("productId") int productId) {
+	public ResponseEntity<Product> getById(@PathVariable int productId) {
 		Product p = productService.getById(productId);
 		return new ResponseEntity<>(p, HttpStatus.OK);
 	}
 
 	@DeleteMapping("/deleteById/{productId}")
-	public ResponseEntity<String> deleteData(@PathVariable("productId") int productId) {
+	public ResponseEntity<String> deleteData(@PathVariable int productId) {
 		productService.deleteById(productId);
 		return new ResponseEntity<>("Data Deleted Successfully", HttpStatus.OK);
 	}
@@ -61,7 +61,7 @@ public class ProductController {
 	// patch 1 productid as reference 2 flagAvailable
 	@PatchMapping("/updateFlag/{available}/{productId}")
 	public ResponseEntity<?> partialUpdate(@PathVariable("available") boolean isAvailable,
-			@PathVariable("productId") int productId) {
+			@PathVariable int productId) {
 		productService.patchProduct(isAvailable, productId);
 		return new ResponseEntity<>("Partially Updated Data", HttpStatus.OK);
 	}
@@ -69,13 +69,13 @@ public class ProductController {
 	// updateQuantity by productId
 	@PatchMapping("/updateQuantity/{quantity}/{productId}")
 	public ResponseEntity<?> quantityUpdate(@PathVariable("quantity") int available,
-			@PathVariable("productId") int productId) {
+			@PathVariable int productId) {
 		productService.quantityAvailable(available, productId);
 		return new ResponseEntity<>("Partially Updated Data", HttpStatus.OK);
 	}
 
 	@GetMapping("/getByName/{productName}")
-	public ResponseEntity<Iterable<Product>> getproductByname(@PathVariable("productName") String productName) {
+	public ResponseEntity<Iterable<Product>> getproductByname(@PathVariable String productName) {
 		Iterable<Product> p = productService.getByName(productName);
 
 		return new ResponseEntity<>(p, HttpStatus.OK);
@@ -88,7 +88,7 @@ public class ProductController {
 //		
 //	}
 	@PutMapping("/products/{productId}")
-	public ResponseEntity<String> updateProduct(@PathVariable("productId") int productId,
+	public ResponseEntity<String> updateProduct(@PathVariable int productId,
 			@RequestPart("product") ProductDto productDto, @RequestPart("images") List<MultipartFile> images)
 			throws IOException {
 		productService.updateProduct(productId, productDto, images);
@@ -97,7 +97,7 @@ public class ProductController {
 
 	// By Using Query For Single Product Get By Name
 	@GetMapping("/getProductByName/{productName}")
-	public ResponseEntity<Product> getOneProductByname(@PathVariable("productName") String productName) {
+	public ResponseEntity<Product> getOneProductByname(@PathVariable String productName) {
 		Product p = productService.getOneProductByName(productName);
 		return new ResponseEntity<>(p, HttpStatus.OK);
 	}

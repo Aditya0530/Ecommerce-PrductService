@@ -148,7 +148,8 @@ public class ProductServiceImpl implements ProductService {
 		if (p == null) {
 			throw new ProductNotSavedException("Id Not Found For Partial Update...!");
 		}
-		productRepository.quantityUpdate(quantity, productId);
+		p.setQuantityAvailable(quantity);
+	    productRepository.save(p);
 		log.info("Partial Update Successfull To Database...{}");
 
 	}
